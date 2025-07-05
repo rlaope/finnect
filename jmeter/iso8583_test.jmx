@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.2">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ISO8583 Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"/>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments"/>
+      <stringProp name="TestPlan.user_define_classpath"/>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Users" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">10</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">5</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"/>
+        <stringProp name="ThreadGroup.delay"/>
+      </ThreadGroup>
+      <hashTree>
+        <TCPClientSampler guiclass="TCPClientSamplerGui" testclass="TCPClientSampler" testname="Send ISO Message" enabled="true">
+          <stringProp name="TCPClientSampler.server">localhost</stringProp>
+          <stringProp name="TCPClientSampler.port">9999</stringProp>
+          <stringProp name="TCPClientSampler.reUseConnection">true</stringProp>
+          <stringProp name="TCPClientSampler.closeConnection">false</stringProp>
+          <stringProp name="TCPClientSampler.SO_LINGER">-1</stringProp>
+          <stringProp name="TCPClientSampler.request">${iso_message}</stringProp>
+          <stringProp name="TCPClientSampler.timeout">10000</stringProp>
+          <stringProp name="TCPClientSampler.classname">org.apache.jmeter.protocol.tcp.sampler.TCPClientImpl</stringProp>
+        </TCPClientSampler>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Create ISO 8583 Message" enabled="true">
+            <stringProp name="filename"/>
+            <stringProp name="parameters"/>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">
+              String mti = &quot;0200&quot;;
+              String bitmap = &quot;A000000000000000&quot;;
+              String field2 = &quot;06123456&quot;; // 카드번호 (LLVAR → 08)
+              String field4 = &quot;000000005000&quot;;
+              String field11 = &quot;000001&quot;;
+
+              String message = mti + bitmap + &quot;08&quot; + field2 + field4 + field11;
+
+              vars.put(&quot;iso_message&quot;, message);
+            </stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
