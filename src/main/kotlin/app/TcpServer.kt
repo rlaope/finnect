@@ -41,8 +41,8 @@ class TcpServer(
                     session.updateLastActive()
 
                     println("[RECV ${session.sessionId}] $message")
-                    val response = message?.let { router.route(it) } ?: "INVALID"
 
+                    val response = message?.let { router.route(it) } ?: "INVALID"
                     output.write(response.toByteArray())
                     output.flush()
                 }
