@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  finnect:
+    build: .
+    container_name: finnect-server
+    ports:
+      - "8583:8583"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=finnect
+      - DB_USER=finnect
+      - DB_PASS=secret
+
+  postgres:
+    image: postgres:15
+    container_name: finnect-db
+    environment:
+      POSTGRES_DB: finnect
+      POSTGRES_USER: finnect
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
